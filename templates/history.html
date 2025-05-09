@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction History | Thoracic Cancer Surgery Risk Prediction{% endblock %}
+
+{% block header_title %}Prediction History{% endblock %}
+{% block header_subtitle %}Record of previous risk assessments{% endblock %}
+
+{% block content %}
+{% if predictions|length > 0 %}
+<div class="row mt-2 mb-3">
+    <div class="col-lg-10 offset-lg-1">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Statistics</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Predictions</h5>
+                                <p class="display-4">{{ predictions|length }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">High Risk Cases</h5>
+                                <p class="display-4 text-danger">
+                                    {{ predictions|selectattr('result.risk_level', 'equalto', 'High Risk')|list|length }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Low Risk Cases</h5>
+                                <p class="display-4 text-success">
+                                    {{ predictions|selectattr('result.risk_level', 'equalto', 'Low Risk')|list|length }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mt-4">
+    <div class="col-lg-10 offset-lg-1">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">Previous Predictions</h3>
+                <a href="{{ url_for('predict') }}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> New Prediction
+                </a>
+            </div>
+            <div class="card-body">
+                {% if predictions|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Patient Age</th>
+                                <th>Medical History</th>
+                                <th>Risk Level</th>
+                                <th>Probability</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pred in predictions|reverse %}
+                            <tr>
+                                <td>{{ pred.timestamp }}</td>
+                                <td>{{ pred.input.AGE }} years</td>
+                                <td>
+                                    <div class="medical-history-container">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>FVC:</span>
+                                            <span>{{ pred.input.FVC }} L</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>FEV1:</span>
+                                            <span>{{ pred.input.FEV1 }} L</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>Age:</span>
+                                            <span>{{ pred.input.AGE }} years</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>Asthma:</span>
+                                            <span class="badge {% if pred.input['Asthama'] == 1 %}bg-danger{% else %}bg-success{% endif %}">
+                                                {% if pred.input['Asthama'] == 1 %}Yes{% else %}No{% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>Smoking:</span>
+                                            <span class="badge {% if pred.input['Smoking'] == 1 %}bg-danger{% else %}bg-success{% endif %}">
+                                                {% if pred.input['Smoking'] == 1 %}Yes{% else %}No{% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>Diabetes:</span>
+                                            <span class="badge {% if pred.input['Diabetes-mellitus'] == 1 %}bg-danger{% else %}bg-success{% endif %}">
+                                                {% if pred.input['Diabetes-mellitus'] == 1 %}Yes{% else %}No{% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>MI (6 months):</span>
+                                            <span class="badge {% if pred.input['mi-6-mo'] == 1 %}bg-danger{% else %}bg-success{% endif %}">
+                                                {% if pred.input['mi-6-mo'] == 1 %}Yes{% else %}No{% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>PAD:</span>
+                                            <span class="badge {% if pred.input['PAD'] == 1 %}bg-danger{% else %}bg-success{% endif %}">
+                                                {% if pred.input['PAD'] == 1 %}Yes{% else %}No{% endif %}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge {% if pred.result.risk_level == 'High Risk' %}bg-danger{% else %}bg-success{% endif %} fs-6">
+                                        {{ pred.result.risk_level }}
+                                    </span>
+                                </td>
+                                <td>{{ pred.result.probability }}%</td>
+                                <td>
+                                    <a href="{{ url_for('patient_analysis', prediction_id=pred._id) }}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-user-md"></i> Patient Analysis
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <!--<p class="mb-0">No prediction history available. Make your first prediction!</p> -->
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %} 

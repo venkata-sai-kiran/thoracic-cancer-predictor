@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Model Analysis | MediRisk{% endblock %}
+
+{% block header_title %}Model Performance Analysis{% endblock %}
+{% block header_subtitle %}Detailed metrics and visualization of our predictive model{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-chart-line me-2 text-primary"></i>
+                <h5 class="mb-0">Performance Metrics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="card border-primary shadow-sm h-100">
+                            <div class="card-body text-center p-3">
+                                <div class="metric-icon mb-2">
+                                    <i class="fas fa-bullseye fa-2x text-primary"></i>
+                                </div>
+                                <h2 class="fw-bold mb-0">{{ metrics.accuracy }}%</h2>
+                                <h6 class="card-title">Overall Accuracy</h6>
+                                <small class="card-text text-muted">Correctly predicted outcomes</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-success shadow-sm h-100">
+                            <div class="card-body text-center p-3">
+                                <div class="metric-icon mb-2">
+                                    <i class="fas fa-microscope fa-2x text-success"></i>
+                                </div>
+                                <h2 class="fw-bold mb-0">{{ metrics.precision }}%</h2>
+                                <h6 class="card-title">Precision</h6>
+                                <small class="card-text text-muted">True positives among predicted</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-info shadow-sm h-100">
+                            <div class="card-body text-center p-3">
+                                <div class="metric-icon mb-2">
+                                    <i class="fas fa-heartbeat fa-2x text-info"></i>
+                                </div>
+                                <h2 class="fw-bold mb-0">{{ metrics.f1_score }}%</h2>
+                                <h6 class="card-title">F1 Score</h6>
+                                <small class="card-text text-muted">Balance of precision & recall</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6">
+                        <div class="card border-warning shadow-sm h-100">
+                            <div class="card-body text-center p-3">
+                                <div class="metric-icon mb-2">
+                                    <i class="fas fa-user-check fa-2x text-warning"></i>
+                                </div>
+                                <h2 class="fw-bold mb-0">{{ metrics.sensitivity }}%</h2>
+                                <h6 class="card-title">Sensitivity (Recall)</h6>
+                                <small class="card-text text-muted">Actual positives identified</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-danger shadow-sm h-100">
+                            <div class="card-body text-center p-3">
+                                <div class="metric-icon mb-2">
+                                    <i class="fas fa-shield-alt fa-2x text-danger"></i>
+                                </div>
+                                <h2 class="fw-bold mb-0">{{ metrics.specificity }}%</h2>
+                                <h6 class="card-title">Specificity</h6>
+                                <small class="card-text text-muted">Actual negatives identified</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-chart-area me-2 text-primary"></i>
+                <h5 class="mb-0">ROC Curve</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="alert alert-info border-0 mb-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    The ROC curve illustrates the diagnostic ability of our model, showing the true positive rate against the false positive rate.
+                </div>
+                <img src="{{ roc_curve }}" alt="ROC Curve" class="img-fluid rounded shadow-sm">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-chart-line me-2 text-primary"></i>
+                <h5 class="mb-0">Training & Validation Loss</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="alert alert-info border-0 mb-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    This graph shows how the training and validation loss changed during model training, indicating effective learning without significant overfitting.
+                </div>
+                <img src="{{ loss_curve }}" alt="Loss Curve" class="img-fluid rounded shadow-sm">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-10 offset-md-1">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-table me-2 text-primary"></i>
+                <h5 class="mb-0">Confusion Matrix</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="alert alert-info border-0 mb-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    The confusion matrix provides a tabular summary of our model's prediction results, showing the number of true positives, false positives, true negatives, and false negatives.
+                </div>
+                <img src="{{ confusion_matrix }}" alt="Confusion Matrix" class="img-fluid rounded shadow-sm mx-auto d-block" >
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+               
+                <h5 class="mb-0">Understanding Model Performance</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="d-flex mb-4">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-chart-pie fa-2x text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5>Accuracy and Precision</h5>
+                                <p>Our model's high accuracy ({{ metrics.accuracy }}%) indicates excellent overall performance in correctly identifying both high and low-risk patients. The precision of {{ metrics.precision }}% shows that positive predictions are highly reliable.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex mb-4">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-balance-scale fa-2x text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5>Sensitivity and Specificity</h5>
+                                <p>The sensitivity ({{ metrics.sensitivity }}%) and specificity ({{ metrics.specificity }}%) demonstrate the model's ability to correctly identify high-risk cases while minimizing false alarms.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-success border-0">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-lightbulb fa-2x"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5>Clinical Implications</h5>
+                            <p>The high F1 score ({{ metrics.f1_score }}%) indicates excellent balance between precision and recall, making this model suitable for clinical decision support. Thoracic surgeons can confidently use these predictions to inform treatment plans and post-operative care strategies.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-12 text-center">
+        {% if not is_logged_in %}
+        <a href="{{ url_for('auth.login', next=url_for('predict')) }}" class="btn btn-assessment me-2">
+            <i class="fas fa-calculator"></i> Start New Assessment
+        </a>
+        {% else %}
+        <a href="{{ url_for('predict') }}" class="btn btn-assessment me-2">
+            <i class="fas fa-calculator"></i> Start New Assessment
+        </a>
+        {% endif %}
+        <a href="{{ url_for('about') }}" class="btn btn-outline-info btn-lg px-4">
+            <i class="fas fa-info-circle me-2"></i> Learn More
+        </a>
+    </div>
+</div>
+{% endblock %}

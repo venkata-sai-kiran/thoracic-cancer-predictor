@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error | Thoracic Cancer Surgery Risk Prediction{% endblock %}
+
+{% block header_title %}500 - Server Error{% endblock %}
+{% block header_subtitle %}Something went wrong on our end{% endblock %}
+
+{% block content %}
+<div class="row mt-5 mb-5">
+    <div class="col-lg-6 offset-lg-3 text-center">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="display-1 text-muted">500</h1>
+                <p class="lead">We encountered an internal server error.</p>
+                <p>Our team has been notified and we're working to fix the issue.</p>
+                <div class="mt-4">
+                    <a href="{{ url_for('home') }}" class="btn btn-primary">
+                        <i class="fas fa-home"></i> Return to Home
+                    </a>
+                    <button onclick="location.reload()" class="btn btn-secondary ms-2">
+                        <i class="fas fa-sync"></i> Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %} 

@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}MediRisk | Home{% endblock %}
+
+{% block header_title %}Thoracic Surgery Risk Assessment{% endblock %}
+{% block header_subtitle %}Post-Operative Life Expectancy for surgical outcomes prediction{% endblock %}
+
+{% block header_buttons %}
+<div class="mt-4">
+    {% if not is_logged_in %}
+    <a href="{{ url_for('auth.login', next=url_for('predict')) }}" class="btn btn-assessment animated">
+        <i class="fas fa-calculator"></i>Start Assessment
+    </a>
+    <a href="{{ url_for('auth.login') }}" class="sr-only">Login</a>
+<a href="{{ url_for('auth.register', next=url_for('predict')) }}" class="sr-only">Register</a>
+
+    {% else %}
+    <a href="{{ url_for('predict') }}" class="btn btn-assessment animated">
+        <i class="fas fa-calculator"></i>Start Assessment
+    </a>
+    {% endif %}
+    
+    <a href="{{ url_for('about') }}" class="btn btn-outline-light btn-lg px-4">
+        <i class="fas fa-info-circle me-2"></i>Learn More
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Stats Section -->
+<div class="row mb-5">
+    <div class="col-md-4 mb-4">
+        <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">
+                <i class="fas fa-chart-pie"></i>
+            </div>
+            <h4 class="feature-title">93%</h4>
+            <p>Prediction Accuracy</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h4 class="feature-title">1000+</h4>
+            <p>Assessments Made</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">
+                <i class="fas fa-award"></i>
+            </div>
+            <h4 class="feature-title">96%</h4>
+            <p>F1 Score</p>
+        </div>
+    </div>
+</div>
+
+<!-- About Section -->
+<div class="row mt-5 mb-5 align-items-center about-section">
+    <div class="col-lg-6 mb-4 mb-lg-0">
+        <h2 class="mb-4">Advanced Risk Assessment for Thoracic Surgery</h2>
+        <p class="mb-4">Our platform uses state-of-the-art machine learning algorithms to predict post-operative outcomes for thoracic cancer surgery patients, helping healthcare professionals make informed decisions.</p>
+        <div class="d-flex mb-3">
+            <div class="me-3">
+                <i class="fas fa-check-circle text-primary fa-2x"></i>
+            </div>
+            <div>
+                <h5>Evidence-Based Predictions</h5>
+                <p class="mb-0">Using clinical parameters that have been validated in medical research</p>
+            </div>
+        </div>
+        <div class="d-flex mb-3">
+            <div class="me-3">
+                <i class="fas fa-check-circle text-primary fa-2x"></i>
+            </div>
+            <div>
+                <h5>Instant Results</h5>
+                <p class="mb-0">Get immediate risk assessments with detailed clinical recommendations</p>
+            </div>
+        </div>
+        <div class="d-flex">
+            <div class="me-3">
+                <i class="fas fa-check-circle text-primary fa-2x"></i>
+            </div>
+            <div>
+                <h5>Secure & Confidential</h5>
+                <p class="mb-0">All patient data is securely stored and protected</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-lg rounded-lg overflow-hidden">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Gj-HKhhEs7EmCXF8FaHCM-4qm1NO9XQmnRNcIPydoFKdf1rQ7kcxkZ1A61ZQFxxtPjc&usqp=CAU" alt="Thoracic Surgery" class="img-fluid">
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mt-5 mb-5 features-section">
+    <div class="col-12 text-center mb-5">
+        <h2>Our Platform Features</h2>
+        <p class="lead">Tools designed for healthcare professionals</p>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h4 class="feature-title">AI-Powered Analytics</h4>
+            <p>Our model is trained on extensive clinical data and provides accurate risk assessments to help surgeons make informed decisions.</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">
+                <i class="fas fa-tablet-alt"></i>
+            </div>
+            <h4 class="feature-title">User-Friendly Interface</h4>
+            <p>Simply input the patient's clinical parameters, and the system will instantly provide a comprehensive risk assessment.</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">
+                <i class="fas fa-history"></i>
+            </div>
+            <h4 class="feature-title">Patient History</h4>
+            <p>Keep track of all patient assessments with our comprehensive history tracking system.</p>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div class="row mt-5 mb-5 works-section">
+    <div class="col-12 text-center mb-5">
+        <h2>How It Works</h2>
+        <p class="lead">A simple process for accurate predictions</p>
+    </div>
+    <div class="col-lg-12">
+        <div class="card border-0 shadow">
+            <div class="card-body p-5">
+                <div class="row">
+                    <div class="col-md-4 mb-4 mb-md-0">
+                        <div class="text-center">
+                            <div class="feature-icon mx-auto">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <h4 class="mt-4 mb-3">1. Input Data</h4>
+                            <p>Enter patient's clinical parameters including pulmonary function tests and comorbidities</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4 mb-md-0">
+                        <div class="text-center">
+                            <div class="feature-icon mx-auto">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <h4 class="mt-4 mb-3">2. Model Analysis</h4>
+                            <p>Our algorithm processes the data and analyzes it using validated prediction models</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="feature-icon mx-auto">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h4 class="mt-4 mb-3">3. Get Results</h4>
+                            <p>Receive a comprehensive risk assessment with clinical recommendations</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-12 text-center">
+                        {% if not is_logged_in %}
+                        <a href="{{ url_for('auth.login', next=url_for('predict')) }}" class="btn btn-assessment">
+                            <i class="fas fa-calculator"></i>Start Your Risk Assessment
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('predict') }}" class="btn btn-assessment">
+                            <i class="fas fa-calculator"></i>Start Your Risk Assessment
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

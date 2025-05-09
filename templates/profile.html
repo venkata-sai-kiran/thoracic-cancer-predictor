@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Profile | Thoracic Cancer Surgery Risk Prediction{% endblock %}
+
+{% block header_title %}User Profile{% endblock %}
+{% block header_subtitle %}Manage your account information{% endblock %}
+
+{% block content %}
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Profile Information</h3>
+            </div>
+            <div class="card-body">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <div class="text-center mb-4">
+                    <div class="avatar-circle">
+                        <span class="initials">{{ user.username[0]|upper }}</span>
+                    </div>
+                </div>
+                
+                <div class="user-info">
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Account Created:</strong> {{ user.created_at.strftime('%Y-%m-%d') }}</p>
+                    <p><strong>Role:</strong> {{ user.role|title }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Change Password</h3>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('auth.change_password') }}" method="post">
+                    <div class="form-group mb-3">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="current_password" name="current_password" required>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password" required>
+                        <small class="form-text text-muted">Password must be at least 8 characters and contain both letters and numbers.</small>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="confirm_password" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-key"></i> Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">History Options</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <a href="{{ url_for('history') }}" class="btn btn-primary w-100">
+                            <i class="fas fa-history"></i> View History
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a href="{{ url_for('delete_history_page') }}" class="btn btn-danger w-100">
+                            <i class="fas fa-trash"></i> Delete History
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .avatar-circle {
+        width: 100px;
+        height: 100px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    .initials {
+        font-size: 40px;
+        color: white;
+        font-weight: bold;
+    }
+    .user-info p {
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const newPassword = document.getElementById('new_password');
+        const confirmPassword = document.getElementById('confirm_password');
+        
+        form.addEventListener('submit', function(event) {
+            // Password validation
+            if (newPassword.value !== confirmPassword.value) {
+                event.preventDefault();
+                alert('New passwords do not match!');
+                return;
+            }
+            
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/;
+            if (!passwordRegex.test(newPassword.value)) {
+                event.preventDefault();
+                alert('Password must be at least 8 characters and contain both letters and numbers!');
+                return;
+            }
+        });
+    });
+</script>
+{% endblock %} 

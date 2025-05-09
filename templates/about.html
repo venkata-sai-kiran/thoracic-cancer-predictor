@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}About | Thoracic Cancer Surgery Risk Prediction{% endblock %}
+
+{% block header_title %}About the Project{% endblock %}
+{% block header_subtitle %}Understanding the thoracic surgery risk prediction system{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Project Overview</h3>
+            </div>
+            <div class="card-body">
+                <p>
+                    This application uses machine learning algorithms to predict the risk of post-operative 
+                    complications for thoracic cancer surgery patients. The system analyzes various patient 
+                    parameters to provide a personalized risk assessment.
+                </p>
+                <p>
+                    The primary goal is to assist thoracic surgeons and oncologists in making informed decisions 
+                    about patient care, surgical approaches, and post-operative management strategies.
+                </p>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Predictive Model</h3>
+            </div>
+            <div class="card-body">
+                <h5>Machine Learning Approach</h5>
+                <p>
+                    Our system employs a combination of machine learning approaches:
+                </p>
+                <ul>
+                    <li><strong>LSTM Neural Network:</strong> For sequence analysis of patient data and complex pattern recognition</li>
+                    <li><strong>XGBoost:</strong> A gradient boosting framework providing accurate and efficient predictions</li>
+                </ul>
+                
+                <h5>Data Sources</h5>
+                <p>
+                    The model is trained on the Thoracic Surgery Dataset, which contains real patient 
+                    data collected from post-operative thoracic surgery patients. The dataset includes 
+                    various clinical parameters and outcomes.
+                </p>
+                
+                <h5>Performance Metrics</h5>
+                <p>
+                    The model's performance is evaluated using various metrics:
+                </p>
+                <ul>
+                    <li><strong>Accuracy:</strong> Overall correctness of predictions</li>
+                    <li><strong>Sensitivity:</strong> Ability to correctly identify high-risk patients</li>
+                    <li><strong>Specificity:</strong> Ability to correctly identify low-risk patients</li>
+                    <li><strong>ROC-AUC:</strong> Discriminative ability of the model across different thresholds</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Clinical Relevance</h3>
+            </div>
+            <div class="card-body">
+                <p>
+                    Post-operative complications following thoracic cancer surgery can significantly impact 
+                    patient outcomes and quality of life. By predicting these risks before surgery, 
+                    clinicians can:
+                </p>
+                <ul>
+                    <li>Implement targeted pre-operative optimization strategies</li>
+                    <li>Adjust surgical approaches to minimize risk</li>
+                    <li>Prepare appropriate post-operative care plans</li>
+                    <li>Have more informed discussions with patients about risk-benefit considerations</li>
+                </ul>
+                
+                <div class="alert alert-warning mt-3">
+                    <strong>Important Note:</strong> This tool is designed to assist clinical decision-making, 
+                    not replace it. The predictions should be considered alongside comprehensive clinical 
+                    evaluation and professional judgment.
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Analysis | Thoracic Cancer Surgery Risk Prediction{% endblock %}
+
+{% block header_title %}Patient Analysis{% endblock %}
+{% block header_subtitle %}Detailed analysis of prediction from {{ prediction.timestamp }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('history') }}">History</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Patient Analysis</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card h-100">
+                <div class="card-header {% if prediction.result.risk_level == 'High Risk' %}bg-danger text-white{% else %}bg-success text-white{% endif %}">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-md me-2"></i>Patient Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <h6 class="fw-bold">Demographics</h6>
+                                <p><i class="fas fa-calendar-alt me-2"></i><strong>Date:</strong> {{ prediction.timestamp }}</p>
+                                <p><i class="fas fa-user me-2"></i><strong>Age:</strong> {{ prediction.input.AGE }} years</p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <h6 class="fw-bold">Lung Function</h6>
+                                <p><i class="fas fa-lungs me-2"></i><strong>FVC:</strong> {{ prediction.input.FVC }} L</p>
+                                <p><i class="fas fa-wind me-2"></i><strong>FEV1:</strong> {{ prediction.input.FEV1 }} L</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Medical History</h6>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Asthma
+                                    <span class="badge {% if prediction.input['Asthama'] == 1 %}bg-danger{% else %}bg-success{% endif %} rounded-pill">
+                                        {% if prediction.input['Asthama'] == 1 %}Yes{% else %}No{% endif %}
+                                    </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Smoking
+                                    <span class="badge {% if prediction.input['Smoking'] == 1 %}bg-danger{% else %}bg-success{% endif %} rounded-pill">
+                                        {% if prediction.input['Smoking'] == 1 %}Yes{% else %}No{% endif %}
+                                    </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Diabetes
+                                    <span class="badge {% if prediction.input['Diabetes-mellitus'] == 1 %}bg-danger{% else %}bg-success{% endif %} rounded-pill">
+                                        {% if prediction.input['Diabetes-mellitus'] == 1 %}Yes{% else %}No{% endif %}
+                                    </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Myocardial Infarction
+                                    <span class="badge {% if prediction.input['mi-6-mo'] == 1 %}bg-danger{% else %}bg-success{% endif %} rounded-pill">
+                                        {% if prediction.input['mi-6-mo'] == 1 %}Yes{% else %}No{% endif %}
+                                    </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Peripheral Arterial Disease
+                                    <span class="badge {% if prediction.input['PAD'] == 1 %}bg-danger{% else %}bg-success{% endif %} rounded-pill">
+                                        {% if prediction.input['PAD'] == 1 %}Yes{% else %}No{% endif %}
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header {% if prediction.result.risk_level == 'High Risk' %}bg-danger text-white{% else %}bg-success text-white{% endif %}">
+                        <i class="fas fa-chart-pie me-2"></i>Risk Assessment
+                    </h5>
+                </div>
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <div class="risk-circle mx-auto mb-3" id="riskCircle" data-percentage="{{ prediction.result.probability }}">
+                        <div class="risk-percentage">{{ prediction.result.probability }}%</div>
+                    </div>
+                    
+                    <h3 class="mt-3 {% if prediction.result.risk_level == 'High Risk' %}text-danger{% else %}text-success{% endif %}">
+                        {{ prediction.result.risk_level }}
+                    </h3>
+                    
+                    <p class="text-muted">
+                        {% if prediction.result.risk_level == 'High Risk' %}
+                        High probability of post-operative complications
+                        {% else %}
+                        Low probability of post-operative complications
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header {% if prediction.result.risk_level == 'High Risk' %}bg-danger text-white{% else %}bg-success text-white{% endif %}">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clipboard-list me-2"></i>Analysis & Recommendations
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if prediction.result.risk_level == 'High Risk' %}
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>High Risk Factors Identified:</h5>
+                        <ul class="mb-3">
+                            {% if prediction.input.AGE > 70 %}<li>Advanced age ({{ prediction.input.AGE }} years) increases surgical complications risk</li>{% endif %}
+                            {% if prediction.input.FVC < 2.0 %}<li>Low FVC ({{ prediction.input.FVC }} L) indicates reduced lung function</li>{% endif %}
+                            {% if prediction.input.FEV1 < 1.5 %}<li>Low FEV1 ({{ prediction.input.FEV1 }} L) suggests airflow limitation</li>{% endif %}
+                            {% if prediction.input['Asthama'] == 1 %}<li>Asthma history may increase respiratory complications</li>{% endif %}
+                            {% if prediction.input['Smoking'] == 1 %}<li>Smoking history affects lung recovery and wound healing</li>{% endif %}
+                            {% if prediction.input['Diabetes-mellitus'] == 1 %}<li>Diabetes increases infection risk and delays healing</li>{% endif %}
+                            {% if prediction.input['mi-6-mo'] == 1 %}<li>Recent myocardial infarction significantly increases cardiac complications</li>{% endif %}
+                            {% if prediction.input['PAD'] == 1 %}<li>Peripheral arterial disease suggests cardiovascular compromise</li>{% endif %}
+                        </ul>
+                        
+                        <h5 class="alert-heading mt-4"><i class="fas fa-clipboard-check me-2"></i>Clinical Recommendations:</h5>
+                        <ol>
+                            <li>Consider intensive pre-operative optimization regimen</li>
+                            <li>Thorough cardiac workup is strongly recommended</li>
+                            <li>Enhanced post-operative monitoring will be necessary</li>
+                            <li>Evaluate alternative treatment approaches given high-risk profile</li>
+                            <li>Conduct detailed discussion with patient about elevated risks</li>
+                            <li>Consider multi-disciplinary team approach for treatment planning</li>
+                        </ol>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-success">
+                        <h5 class="alert-heading"><i class="fas fa-check-circle me-2"></i>Low Risk Assessment:</h5>
+                        <p>The patient shows good surgical candidacy with a low predicted risk of post-operative complications. The following favorable factors were identified:</p>
+                        <ul class="mb-3">
+                            {% if prediction.input.AGE < 65 %}<li>Age within favorable range ({{ prediction.input.AGE }} years)</li>{% endif %}
+                            {% if prediction.input.FVC >= 2.0 %}<li>Adequate lung capacity (FVC: {{ prediction.input.FVC }} L)</li>{% endif %}
+                            {% if prediction.input.FEV1 >= 1.5 %}<li>Good airflow parameters (FEV1: {{ prediction.input.FEV1 }} L)</li>{% endif %}
+                            {% if prediction.input['Asthama'] == 0 %}<li>No asthma history</li>{% endif %}
+                            {% if prediction.input['Smoking'] == 0 %}<li>No smoking history</li>{% endif %}
+                            {% if prediction.input['Diabetes-mellitus'] == 0 %}<li>No diabetes</li>{% endif %}
+                            {% if prediction.input['mi-6-mo'] == 0 %}<li>No recent cardiac events</li>{% endif %}
+                            {% if prediction.input['PAD'] == 0 %}<li>No peripheral arterial disease</li>{% endif %}
+                        </ul>
+                        
+                        <h5 class="alert-heading mt-4"><i class="fas fa-clipboard-check me-2"></i>Clinical Recommendations:</h5>
+                        <ol>
+                            <li>Standard pre-operative preparation should be adequate</li>
+                            <li>Proceed with planned surgical approach</li>
+                            <li>Standard post-operative care protocol is appropriate</li>
+                            <li>Regular follow-up as per usual protocol</li>
+                            <li>No additional specialized monitoring required</li>
+                        </ol>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col text-center">
+            <a href="{{ url_for('history') }}" class="btn btn-secondary me-2">
+                <i class="fas fa-arrow-left me-1"></i> Back to History
+            </a>
+            <a href="{{ url_for('predict') }}" class="btn btn-primary me-2">
+                <i class="fas fa-plus-circle me-1"></i> New Prediction
+            </a>
+            <a href="{{ url_for('analysis') }}" class="btn btn-info">
+                <i class="fas fa-chart-bar me-1"></i> Model Analysis
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .breadcrumb-item a{
+        color: rgb(244, 244, 82);
+        font-size: 1.2rem;
+        font-weight:700;
+    
+    }
+    .risk-circle {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f1f1f1;
+    }
+    
+    .risk-percentage {
+        background-color: white;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+    
+    :root {
+        --danger-color: #dc3545;
+        --success-color: #198754;
+    }
+    
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize the risk circle
+        const riskCircle = document.getElementById('riskCircle');
+        if (riskCircle) {
+            const percentage = riskCircle.getAttribute('data-percentage');
+            const percentageValue = parseFloat(percentage);
+            
+            // Determine if it's high risk or low risk
+            const isHighRisk = document.querySelector('h3.text-danger') !== null;
+            
+            // Set the background with conic gradient
+            setTimeout(() => {
+                if (isHighRisk) {
+                    riskCircle.style.background = `conic-gradient(var(--danger-color) 0% ${percentageValue}%, #f1f1f1 ${percentageValue}% 100%)`;
+                } else {
+                    riskCircle.style.background = `conic-gradient(var(--success-color) 0% ${percentageValue}%, #f1f1f1 ${percentageValue}% 100%)`;
+                }
+            }, 100);
+        }
+    });
+</script>
+{% endblock %} 

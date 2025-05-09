@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Delete History | Thoracic Cancer Surgery Risk Prediction{% endblock %}
+
+{% block header_title %}Delete Prediction History{% endblock %}
+{% block header_subtitle %}Manage your prediction records{% endblock %}
+
+{% block content %}
+<div class="row mt-2">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card">
+            <div class="card-header bg-danger text-white d-flex align-items-center">
+                <i class="fas fa-trash-alt me-2"></i>
+                <h5 class="mb-0">Delete Prediction History</h5>
+            </div>
+            <div class="card-body">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <div class="alert alert-warning">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="warning-icon me-3">
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        </div>
+                        <div>
+                            <h5 class="alert-heading mb-1">Warning: This action cannot be undone</h5>
+                            <p class="mb-0">All your prediction history will be permanently deleted from our system.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Are you sure you want to delete your entire prediction history?</h5>
+                    <p>This will remove all your past risk assessments and their associated data. You will no longer be able to access these records.</p>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('auth.profile') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Cancel
+                    </a>
+                    <form action="{{ url_for('delete_history') }}" method="POST">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i> Confirm Delete All History
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .warning-icon {
+        color: #f0ad4e;
+    }
+    .alert-warning {
+        border-left: 5px solid #f0ad4e;
+    }
+</style>
+{% endblock %} 

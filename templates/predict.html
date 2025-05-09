@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Make Prediction | Thoracic Cancer Surgery Risk Prediction{% endblock %}
+
+{% block header_title %}Patient Risk Assessment{% endblock %}
+{% block header_subtitle %}Enter clinical parameters to predict post-operative outcomes{% endblock %}
+
+{% block header_buttons %}
+<a href="{{ url_for('predict') }}" class="btn btn-assessment">
+    <i class="fas fa-user-md"></i> New Assessment
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-user-md me-2"></i>
+                <h5 class="mb-0">Patient Information</h5>
+            </div>
+            <div class="card-body">
+                <form id="prediction-form" action="{{ url_for('predict') }}" method="post">
+                    <!-- Header Row -->
+                    <div class="row mb-4">
+                        <div class="col-12 text-center bg-primary text-white py-2 rounded">
+                            <h5 class="mb-0">Patient Input Details</h5>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Content Row -->
+                    <div class="row">
+                        <!-- Left Column - Pulmonary Function -->
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-lungs text-white"></i>
+                                </div>
+                                <h5 class="mb-0 ms-2">Pulmonary Function</h5>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label for="fvc" class="form-label">FVC (Forced Vital Capacity)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-wind"></i></span>
+                                    <input type="number" class="form-control" id="fvc" name="fvc" step="0.01" min="0" max="10" required>
+                                    <span class="input-group-text">L</span>
+                                </div>
+                                <small class="form-text">Total volume of air that can be exhaled after full inspiration</small>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label for="fev1" class="form-label">FEV1 (Forced Expiratory Volume)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-wind"></i></span>
+                                    <input type="number" class="form-control" id="fev1" name="fev1" step="0.01" min="0" max="10" required>
+                                    <span class="input-group-text">L</span>
+                                </div>
+                                <small class="form-text">Volume of air exhaled in the first second</small>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label for="age" class="form-label">Age</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    <input type="number" class="form-control" id="age" name="age" min="20" max="130" required>
+                                    <span class="input-group-text">years</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column - Medical History -->
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-file-medical text-white"></i>
+                                </div>
+                                <h5 class="mb-0 ms-2">Medical Data</h5>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label class="form-label">Asthma</label>
+                                <div class="d-flex">
+                                    <div class="form-check me-4">
+                                        <input class="form-check-input" type="radio" name="asthma" id="asthma-yes" value="yes">
+                                        <label class="form-check-label" for="asthma-yes">Yes</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="asthma" id="asthma-no" value="no" checked>
+                                        <label class="form-check-label" for="asthma-no">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label class="form-label">Smoking</label>
+                                <div class="d-flex">
+                                    <div class="form-check me-4">
+                                        <input class="form-check-input" type="radio" name="smoking" id="smoking-yes" value="yes">
+                                        <label class="form-check-label" for="smoking-yes">Yes</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="smoking" id="smoking-no" value="no" checked>
+                                        <label class="form-check-label" for="smoking-no">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label class="form-label">PAD (Peripheral Arterial Disease)</label>
+                                <div class="d-flex">
+                                    <div class="form-check me-4">
+                                        <input class="form-check-input" type="radio" name="pad" id="pad-yes" value="yes">
+                                        <label class="form-check-label" for="pad-yes">Yes</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="pad" id="pad-no" value="no" checked>
+                                        <label class="form-check-label" for="pad-no">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label class="form-label">MI in last 6 months</label>
+                                <div class="d-flex">
+                                    <div class="form-check me-4">
+                                        <input class="form-check-input" type="radio" name="mi" id="mi-yes" value="yes">
+                                        <label class="form-check-label" for="mi-yes">Yes</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="mi" id="mi-no" value="no" checked>
+                                        <label class="form-check-label" for="mi-no">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label class="form-label">Diabetes Mellitus</label>
+                                <div class="d-flex">
+                                    <div class="form-check me-4">
+                                        <input class="form-check-input" type="radio" name="diabetes" id="diabetes-yes" value="yes">
+                                        <label class="form-check-label" for="diabetes-yes">Yes</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="diabetes" id="diabetes-no" value="no" checked>
+                                        <label class="form-check-label" for="diabetes-no">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-assessment">
+                                <i class="fas fa-calculator"></i> Calculate Risk
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 mb-5">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-info-circle me-2"></i>
+                <h5 class="mb-0">Parameter Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info border-0 bg-light" role="alert">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    These clinical parameters are used as inputs to our predictive model.
+                    The values should be obtained from the patient's pre-operative assessment.
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="d-flex mb-3">
+                            <div class="flex-shrink-0">
+                                <div class="feature-icon">
+                                    <i class="fas fa-lungs"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5>Pulmonary Function Tests</h5>
+                                <p class="mb-0"><strong>FVC</strong> and <strong>FEV1</strong> are important spirometry measurements that assess 
+                                lung function. These are crucial parameters for evaluating
+                                pre-operative respiratory status.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex mb-3">
+                            <div class="flex-shrink-0">
+                                <div class="feature-icon">
+                                    <i class="fas fa-file-medical"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5>Comorbidities</h5>
+                                <p class="mb-0">The presence of comorbidities like <strong>diabetes</strong>, <strong>MI</strong>, 
+                                <strong>PAD</strong>, <strong>asthma</strong>, and <strong>smoking</strong> significantly
+                                impact outcomes and are important predictors.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}Risk Assessment Results | MediRisk{% endblock %}
+
+{% block header_title %}Risk Assessment Results{% endblock %}
+{% block header_subtitle %}Advanced analytics prediction for thoracic surgery outcomes{% endblock %}
+
+{% block header_buttons %}
+<a href="{{ url_for('predict') }}" class="btn btn-assessment">
+    <i class="fas fa-user-plus"></i> New Assessment
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-lg-10 offset-lg-1">
+        <div class="card mb-4">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-chart-pie me-2"></i>
+                <h5 class="mb-0">Risk Assessment Results</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="dashboard-panel text-center p-4">
+                            <h5 class="text-uppercase mb-4">Risk Level</h5>
+                            <div class="risk-circle risk-circle-{% if risk_level == 'High Risk' %}high{% else %}low{% endif %}"style="--percentage:{{probability}}%">
+                                <div class="risk-circle-inner">
+                                    <p class="risk-percentage mb-1">{{ probability }}%</p>
+                                    <p class="risk-label">{{ risk_level }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="dashboard-panel text-center p-4">
+                            <h5 class="text-uppercase mb-4">
+                                <i class="fas fa-{% if risk_level == 'High Risk' %}exclamation-triangle text-danger{% else %}check-circle text-success{% endif %} me-2"></i>
+                                Status
+                            </h5>
+                            <div class="d-inline-block p-4 rounded-circle1 result-badge {% if risk_level == 'High Risk' %}badge-high-risk{% else %}badge-low-risk{% endif %}">
+                                <span class="d-block fs-1">
+                                    {% if risk_level == 'High Risk' %}
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    {% else %}
+                                    <i class="fas fa-check-circle"></i>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <h4 class="mt-4">{{ risk_level }}</h4>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="dashboard-panel p-4">
+                            <h5 class="text-uppercase mb-4">Patient Summary</h5>
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div>
+                                    <div class="text-muted">Age</div>
+                                    <div class="fw-bold">{{ input_data.AGE }} years</div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-lungs"></i>
+                                </div>
+                                <div>
+                                    <div class="text-muted">Lung Function</div>
+                                    <div class="fw-bold">FEV1: {{ input_data.FEV1 }}L</div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div>
+                                    <div class="text-muted">Assessment Date</div>
+                                    <div class="fw-bold">{{ timestamp.split(' ')[0] }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-12">
+                        {% if risk_level == "High Risk" %}
+                        <div class="alert alert-danger border-0 recommendation-box">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-circle fa-2x"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5>Clinical Recommendation</h5>
+                                    <p>
+                                        This indicates a high probability of complications after thoracic surgery. 
+                                        Additional pre-operative assessment and optimization are strongly recommended.
+                                    </p>
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <h6><i class="fas fa-clipboard-check me-2"></i>Suggested actions:</h6>
+                                            <ul class="mb-0">
+                                                <li>Consider additional cardiopulmonary optimization</li>
+                                                <li>Plan for intensive post-operative monitoring</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6><i class="fas fa-notes-medical me-2"></i>Consider:</h6>
+                                            <ul class="mb-0">
+                                                <li>Evaluate benefit-risk ratio of the procedure</li>
+                                                <li>Consider alternative treatment approaches</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-success border-0 recommendation-box">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5>Clinical Recommendation</h5>
+                                    <p>
+                                        This indicates a low probability of complications after thoracic surgery.
+                                        Standard pre-operative procedures are recommended.
+                                    </p>
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <h6><i class="fas fa-clipboard-check me-2"></i>Suggested actions:</h6>
+                                            <ul class="mb-0">
+                                                <li>Proceed with standard pre-operative preparation</li>
+                                                <li>Follow routine post-operative protocols</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6><i class="fas fa-notes-medical me-2"></i>Monitor:</h6>
+                                            <ul class="mb-0">
+                                                <li>As per regular post-thoracic surgery guidelines</li>
+                                                <li>Normal follow-up schedule recommended</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-user-md me-2"></i>
+                <h5 class="mb-0">Patient Data Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="dashboard-panel mb-4">
+                            <h5 class="d-flex align-items-center">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-lungs"></i>
+                                </div>
+                                Pulmonary Function
+                            </h5>
+                            <div class="table-responsive">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <th>FVC</th>
+                                        <td>{{ input_data.FVC }} L</td>
+                                    </tr>
+                                    <tr>
+                                        <th>FEV1</th>
+                                        <td>{{ input_data.FEV1 }} L</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="dashboard-panel mb-4">
+                            <h5 class="d-flex align-items-center">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-file-medical"></i>
+                                </div>
+                                Comorbidities
+                            </h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                                        <span>Asthma</span>
+                                        <span class="badge rounded-pill {% if input_data['Asthama'] == 1 %}bg-danger{% else %}bg-success{% endif %}">
+                                            {% if input_data['Asthama'] == 1 %}Yes{% else %}No{% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                                        <span>Smoking</span>
+                                        <span class="badge rounded-pill {% if input_data['Smoking'] == 1 %}bg-danger{% else %}bg-success{% endif %}">
+                                            {% if input_data['Smoking'] == 1 %}Yes{% else %}No{% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center p-2">
+                                        <span>PAD</span>
+                                        <span class="badge rounded-pill {% if input_data['PAD'] == 1 %}bg-danger{% else %}bg-success{% endif %}">
+                                            {% if input_data['PAD'] == 1 %}Yes{% else %}No{% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-6">
+                                    <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                                        <span>MI in 6mo</span>
+                                        <span class="badge rounded-pill {% if input_data['mi-6-mo'] == 1 %}bg-danger{% else %}bg-success{% endif %}">
+                                            {% if input_data['mi-6-mo'] == 1 %}Yes{% else %}No{% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                                        <span>Diabetes</span>
+                                        <span class="badge rounded-pill {% if input_data['Diabetes-mellitus'] == 1 %}bg-danger{% else %}bg-success{% endif %}">
+                                            {% if input_data['Diabetes-mellitus'] == 1 %}Yes{% else %}No{% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <a href="{{ url_for('predict') }}" class="btn btn-assessment me-2">
+                    <i class="fas fa-user-plus"></i> New Assessment
+                </a>
+                <a href="{{ url_for('history') }}" class="btn btn-outline">
+                    <i class="fas fa-history me-2"></i> View History
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize risk circles
+    const riskCircles = document.querySelectorAll('.risk-circle');
+    riskCircles.forEach(circle => {
+        const percentage = circle.style.getPropertyValue('--percentage') || '0%';
+        const percentageValue = parseFloat(percentage);
+        
+        setTimeout(() => {
+            circle.style.background = circle.classList.contains('risk-circle-high') 
+                ? `conic-gradient(var(--danger-color) 0% ${percentageValue}%, #f1f1f1 ${percentageValue}% 100%)`
+                : `conic-gradient(var(--success-color) 0% ${percentageValue}%, #f1f1f1 ${percentageValue}% 100%)`;
+        }, 100);
+    });
+});
+</script>
+{% endblock %}
+
